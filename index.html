@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronFlow: Home Tone & Weight Loss</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals, Slate Blue & Energetic Coral for Weight Loss Focus -->
+    <!-- Application Structure Plan: 
+         1. Hero/Dashboard: Updated for Weight Loss goal. Chart shows split between Lower Body, Full Body/Upper, and Cardio.
+         2. Training Hub: Specific "Work From Home" exercises. Added "Watch Demo" buttons for video visualization.
+         3. Progress & Nutrition: Retained protein calc, added Calorie Deficit note.
+         4. Navigation: Same robust tab system.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; 
+            height: 300px;    
+            max-height: 350px;
+            margin: 0 auto;
+        }
+
+        /* Hide scrollbar for clean UI in lists */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .active-tab {
+            border-bottom: 2px solid #ec4899; /* Pink-500 for energy */
+            color: #be185d; /* Pink-700 */
+            font-weight: 600;
+        }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-slate-700 tracking-tight">IronFlow <span class="text-pink-500 text-sm font-normal">Home & Tone</span></span>
+                </div>
+                <div class="flex space-x-8 items-center hidden md:flex">
+                    <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn active-tab px-3 py-2 text-sm transition-colors">Overview</button>
+                    <button onclick="switchView('training')" id="nav-training" class="nav-btn px-3 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">Daily Training</button>
+                    <button onclick="switchView('lifestyle')" id="nav-lifestyle" class="nav-btn px-3 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">Diet & Tips</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-slate-500 focus:outline-none">
+                        Menu ☰
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-stone-200 px-4 py-2">
+            <button onclick="switchView('dashboard')" class="block w-full text-left py-2 text-slate-700">Overview</button>
+            <button onclick="switchView('training')" class="block w-full text-left py-2 text-slate-700">Daily Training</button>
+            <button onclick="switchView('lifestyle')" class="block w-full text-left py-2 text-slate-700">Diet & Tips</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- VIEW 1: DASHBOARD -->
+        <section id="view-dashboard" class="fade-in">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-bold text-slate-800 mb-2">Weight Loss & Lower Body Focus</h1>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    A high-energy, work-from-home routine designed to burn calories and tone legs & glutes.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                
+                <!-- Weekly Schedule Grid -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="mr-2">📅</span> The Schedule
+                    </h2>
+                    <p class="text-sm text-slate-500 mb-6">
+                        3 focused Lower Body days, 1 Upper Body tone, and Cardio to maximize fat burn.
+                    </p>
+                    <div class="space-y-3">
+                        <button onclick="selectDay('monday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-pink-50 hover:bg-pink-100 transition border-l-4 border-pink-500">
+                            <span class="font-semibold text-pink-900">Monday</span>
+                            <span class="text-sm text-pink-700">Lower Body: Strength (Squats)</span>
+                        </button>
+                        <button onclick="selectDay('tuesday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition border-l-4 border-blue-500">
+                            <span class="font-semibold text-blue-900">Tuesday</span>
+                            <span class="text-sm text-blue-700">Upper Body Tone & Core</span>
+                        </button>
+                        <button onclick="selectDay('wednesday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-orange-50 hover:bg-orange-100 transition border-l-4 border-orange-500">
+                            <span class="font-semibold text-orange-900">Wednesday</span>
+                            <span class="text-sm text-orange-700">HIIT Cardio / Fat Burn</span>
+                        </button>
+                        <button onclick="selectDay('thursday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-pink-50 hover:bg-pink-100 transition border-l-4 border-pink-500">
+                            <span class="font-semibold text-pink-900">Thursday</span>
+                            <span class="text-sm text-pink-700">Lower Body: Glutes & Hips</span>
+                        </button>
+                        <button onclick="selectDay('friday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition border-l-4 border-purple-500">
+                            <span class="font-semibold text-purple-900">Friday</span>
+                            <span class="text-sm text-purple-700">Full Body Circuit</span>
+                        </button>
+                        <button onclick="selectDay('saturday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 transition border-l-4 border-emerald-500">
+                            <span class="font-semibold text-emerald-900">Saturday</span>
+                            <span class="text-sm text-emerald-700">Active: Walking/Hiking</span>
+                        </button>
+                        <button onclick="selectDay('sunday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-stone-100 hover:bg-stone-200 transition border-l-4 border-stone-400">
+                            <span class="font-semibold text-stone-700">Sunday</span>
+                            <span class="text-sm text-stone-600">Rest & Recovery</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Visual Breakdown -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col items-center justify-center">
+                    <h2 class="text-xl font-bold mb-2">Focus Distribution</h2>
+                    <p class="text-sm text-slate-500 mb-4 text-center">
+                        Heavy emphasis on Lower Body and Calorie Burning (HIIT/Circuit).
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+                    <div class="mt-6 grid grid-cols-3 gap-4 text-center w-full">
+                        <div class="p-2 bg-pink-50 rounded">
+                            <div class="text-lg font-bold text-pink-600">3</div>
+                            <div class="text-xs text-slate-500 uppercase">Lower Body</div>
+                        </div>
+                        <div class="p-2 bg-orange-50 rounded">
+                            <div class="text-lg font-bold text-orange-600">3</div>
+                            <div class="text-xs text-slate-500 uppercase">Circuit/Cardio</div>
+                        </div>
+                        <div class="p-2 bg-stone-100 rounded">
+                            <div class="text-lg font-bold text-stone-600">1</div>
+                            <div class="text-xs text-slate-500 uppercase">Rest</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg w-full">
+                        <h3 class="text-sm font-bold text-yellow-800 mb-1">💡 Weight Loss Tip</h3>
+                        <p class="text-xs text-yellow-700">You cannot "spot reduce" fat, but you CAN build muscle in your legs while burning fat overall. This routine does exactly that.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- VIEW 2: TRAINING HUB -->
+        <section id="view-training" class="hidden fade-in">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-800">Home Workout Hub</h1>
+                <p class="text-slate-600">No gym required. Click "Watch Demo" to see how to do the move on YouTube.</p>
+            </div>
+
+            <!-- Warm Up Section -->
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-8">
+                <div class="flex items-center justify-between cursor-pointer" onclick="toggleWarmup()">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">🔥</span>
+                        <div>
+                            <h3 class="font-bold text-orange-900">Pre-Workout Warm Up</h3>
+                            <p class="text-sm text-orange-700">Essential for preventing injury. Click to expand.</p>
+                        </div>
+                    </div>
+                    <span id="warmup-arrow" class="text-orange-900 text-xl transform transition-transform">▼</span>
+                </div>
+                <div id="warmup-content" class="hidden mt-4 border-t border-orange-200 pt-4">
+                    <ul class="list-disc pl-5 space-y-2 text-orange-800">
+                        <li><strong>1 Min:</strong> High Knees or Jog in Place (Get heart rate up).</li>
+                        <li><strong>1 Min:</strong> Bodyweight Squats (Slow, focus on depth).</li>
+                        <li><strong>1 Min:</strong> Arm Circles & Torso Twists.</li>
+                        <li><strong>1 Min:</strong> Glute Bridges (Wake up the hips).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Day Selector Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6" id="day-tabs">
+                <!-- Buttons injected by JS -->
+            </div>
+
+            <!-- Workout Content Card -->
+            <div id="workout-card" class="bg-white rounded-xl shadow-lg border border-stone-200 overflow-hidden">
+                <!-- Header -->
+                <div class="bg-slate-800 text-white p-6">
+                    <h2 id="workout-title" class="text-2xl font-bold">Select a Day</h2>
+                    <p id="workout-focus" class="text-slate-300 italic">Select a day above to see the routine.</p>
+                </div>
+                
+                <!-- Content -->
+                <div class="p-6">
+                    <!-- Exercise List -->
+                    <div id="exercise-list" class="space-y-4">
+                        <p class="text-center text-slate-400 py-10">Select a workout day to begin.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- VIEW 3: LIFESTYLE (Nutrition & Progress) -->
+        <section id="view-lifestyle" class="hidden fade-in">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-800">Diet & Progress</h1>
+                <p class="text-slate-600">Exercise is for fitness. Diet is for weight loss.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Protein Calculator -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h2 class="text-xl font-bold mb-4 text-emerald-700 flex items-center">
+                        <span class="mr-2">🥗</span> Protein Calculator
+                    </h2>
+                    <p class="text-sm text-slate-600 mb-4">
+                        High protein helps you stay full and build muscle while losing fat.
+                    </p>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Your Weight (lbs)</label>
+                        <div class="flex">
+                            <input type="number" id="weight-input" placeholder="e.g. 175" class="flex-1 p-3 border border-stone-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <button onclick="calculateProtein()" class="bg-emerald-600 text-white px-6 font-bold rounded-r-lg hover:bg-emerald-700">Calc</button>
+                        </div>
+                    </div>
+
+                    <div id="protein-result" class="hidden bg-emerald-50 p-4 rounded-lg text-center border border-emerald-100">
+                        <p class="text-sm text-emerald-800">Daily Target:</p>
+                        <p class="text-3xl font-bold text-emerald-600"><span id="protein-val">0</span>g - <span id="protein-val-max">0</span>g</p>
+                    </div>
+                </div>
+
+                <!-- Weight Loss Keys -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h2 class="text-xl font-bold mb-4 text-pink-700 flex items-center">
+                        <span class="mr-2">⚖️</span> Keys to Weight Loss
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+                            <h3 class="font-bold text-slate-800">1. Calorie Deficit</h3>
+                            <p class="text-sm text-slate-600 mt-1">You must eat fewer calories than you burn. This routine burns calories, but portion control is key.</p>
+                        </div>
+                        <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+                            <h3 class="font-bold text-slate-800">2. NEAT (Walking)</h3>
+                            <p class="text-sm text-slate-600 mt-1">Non-Exercise Activity Thermogenesis. Try to get 7k-10k steps a day *outside* of these workouts.</p>
+                        </div>
+                        <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+                            <h3 class="font-bold text-slate-800">3. Consistency</h3>
+                            <p class="text-sm text-slate-600 mt-1">Don't be perfect, be consistent. If you miss a day, just get back on track the next.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 py-6 mt-8">
+        <div class="max-w-5xl mx-auto px-4 text-center text-slate-400 text-sm">
+            <p>© IronFlow Tracker. Consult a physician before beginning any exercise program.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORE (UPDATED FOR WEIGHT LOSS & LOWER BODY) ---
+        const scheduleData = {
+            monday: {
+                title: "Day 1: Lower Body Strength",
+                focus: "Target: Quads, Glutes & Hamstrings. Heavy focus.",
+                type: "strength",
+                exercises: [
+                    { name: "Goblet Squats", sets: 3, reps: "12 reps", note: "Use a dumbbell or heavy water bottle", query: "how to do goblet squats home workout" },
+                    { name: "Reverse Lunges", sets: 3, reps: "10 per leg", note: "Keep chest up, knee almost touching floor", query: "how to do reverse lunges" },
+                    { name: "Glute Bridges", sets: 3, reps: "15-20 reps", note: "Squeeze hard at the top", query: "how to do glute bridges" },
+                    { name: "Calf Raises", sets: 3, reps: "20 reps", note: "Use a step or stairs if available", query: "how to do calf raises at home" },
+                    { name: "Wall Sit", sets: 3, reps: "45 seconds", note: "Burnout finisher!", query: "how to do wall sit" }
+                ]
+            },
+            tuesday: {
+                title: "Day 2: Upper Body Tone & Core",
+                focus: "Target: Posture and Core strength. Keep intensity high.",
+                type: "strength",
+                exercises: [
+                    { name: "Push-Ups (Knees or Toes)", sets: 3, reps: "8-12 reps", note: "Keep body in a straight line", query: "how to do push ups for beginners" },
+                    { name: "Doorframe Rows / Towel Rows", sets: 3, reps: "12-15 reps", note: "Works the back posture", query: "how to do doorframe rows" },
+                    { name: "Shoulder Taps (Plank position)", sets: 3, reps: "20 taps total", note: "Anti-rotation core work", query: "how to do shoulder taps" },
+                    { name: "Tricep Dips", sets: 3, reps: "10-12 reps", note: "Use a sturdy chair or couch", query: "how to do tricep dips on chair" },
+                    { name: "Plank", sets: 3, reps: "30-60 sec", note: "Hold steady!", query: "how to do a perfect plank" }
+                ]
+            },
+            wednesday: {
+                title: "Day 3: HIIT / Cardio Fat Burn",
+                focus: "Target: High heart rate to burn calories.",
+                type: "cardio",
+                exercises: [
+                    { name: "Jumping Jacks", sets: 4, reps: "45 seconds", note: "15 sec rest between sets", query: "how to do jumping jacks" },
+                    { name: "Mountain Climbers", sets: 4, reps: "30 seconds", note: "Fast pace!", query: "how to do mountain climbers" },
+                    { name: "Bodyweight Squat Jumps", sets: 4, reps: "15 reps", note: "Explosive movement", query: "how to do squat jumps" },
+                    { name: "High Knees", sets: 4, reps: "30 seconds", note: "Get knees to waist height", query: "how to do high knees" },
+                    { name: "Burpees (No pushup)", sets: 3, reps: "10 reps", note: "The ultimate calorie burner", query: "how to do burpees for beginners" }
+                ]
+            },
+            thursday: {
+                title: "Day 4: Glutes & Hips (Lower Focus)",
+                focus: "Target: Shaping the glutes and improving hip stability.",
+                type: "strength",
+                exercises: [
+                    { name: "Donkey Kicks", sets: 3, reps: "15 per leg", note: "Squeeze glute at top", query: "how to do donkey kicks" },
+                    { name: "Fire Hydrants", sets: 3, reps: "15 per leg", note: "Side glute work", query: "how to do fire hydrants exercise" },
+                    { name: "Single Leg Deadlift", sets: 3, reps: "10 per leg", note: "Use wall for balance if needed", query: "how to do single leg deadlift bodyweight" },
+                    { name: "Side Lunges", sets: 3, reps: "10 per leg", note: "Deep stretch and push back", query: "how to do side lunges" },
+                    { name: "Sumo Squat Pulses", sets: 3, reps: "20 pulses", note: "Wide stance, small movements at bottom", query: "how to do sumo squat pulses" }
+                ]
+            },
+            friday: {
+                title: "Day 5: Full Body Circuit",
+                focus: "Target: Endurance and calorie burn. Minimal rest.",
+                type: "strength",
+                exercises: [
+                    { name: "Squat to Overhead Press", sets: 3, reps: "15 reps", note: "Use water bottles or light weights", query: "how to do squat to overhead press" },
+                    { name: "Step-Ups", sets: 3, reps: "12 per leg", note: "Use a sturdy chair or stairs", query: "how to do step ups on chair" },
+                    { name: "Bicycle Crunches", sets: 3, reps: "20 reps", note: "Slow and controlled", query: "how to do bicycle crunches" },
+                    { name: "Inchworms", sets: 3, reps: "10 reps", note: "Hamstring stretch + shoulder work", query: "how to do inchworms exercise" },
+                    { name: "Russian Twists", sets: 3, reps: "20 reps", note: "Feet up or down", query: "how to do russian twists" }
+                ]
+            },
+            saturday: {
+                title: "Day 6: Active Recovery / LISS",
+                focus: "Low Intensity Steady State cardio. Great for fat burning without stress.",
+                type: "cardio_light",
+                options: [
+                    "45 Minute Brisk Walk (Outdoors)",
+                    "Hiking in nature",
+                    "Light Bike Ride",
+                    "Deep Stretching / Yoga Session"
+                ]
+            },
+            sunday: {
+                title: "Day 7: Full Rest",
+                focus: "Recover. Meal prep for the week to stay on diet.",
+                type: "rest",
+                options: ["Sleep", "Hydrate", "Meal Prep Healthy Lunches"]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        let currentView = 'dashboard';
+
+        // --- DOM MANIPULATION ---
+
+        function switchView(viewName) {
+            currentView = viewName;
+            ['dashboard', 'training', 'lifestyle'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${v}`);
+                if(btn) {
+                    btn.classList.remove('active-tab', 'text-pink-700');
+                    btn.classList.add('text-slate-500');
+                }
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-slate-500');
+            }
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function selectDay(dayKey) {
+            switchView('training');
+            renderWorkout(dayKey);
+        }
+
+        function renderDayTabs() {
+            const container = document.getElementById('day-tabs');
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            container.innerHTML = days.map(day => {
+                const label = day.charAt(0).toUpperCase() + day.slice(1, 3);
+                return `<button onclick="renderWorkout('${day}')" class="px-4 py-2 rounded-full text-sm font-semibold border border-stone-200 bg-white hover:bg-slate-50 focus:ring-2 focus:ring-pink-400 transition" id="tab-${day}">${label}</button>`;
+            }).join('');
+        }
+
+        function renderWorkout(dayKey) {
+            const data = scheduleData[dayKey];
+            
+            document.querySelectorAll('#day-tabs button').forEach(b => {
+                b.classList.remove('bg-slate-800', 'text-white');
+                b.classList.add('bg-white', 'text-slate-700');
+            });
+            document.getElementById(`tab-${dayKey}`).classList.remove('bg-white', 'text-slate-700');
+            document.getElementById(`tab-${dayKey}`).classList.add('bg-slate-800', 'text-white');
+
+            document.getElementById('workout-title').innerText = data.title;
+            document.getElementById('workout-focus').innerText = data.focus;
+
+            const listContainer = document.getElementById('exercise-list');
+            listContainer.innerHTML = '';
+
+            if (data.type === 'strength' || data.type === 'cardio') {
+                data.exercises.forEach((ex, index) => {
+                    // Create search URL for video demo
+                    const videoUrl = `https://www.youtube.com/results?search_query=${ex.query.replace(/ /g, '+')}`;
+                    
+                    listContainer.innerHTML += `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-stone-50 rounded-lg transition border-b border-stone-100 last:border-0 gap-3">
+                            <div class="flex items-start">
+                                <input type="checkbox" id="check-${index}" class="mt-1 w-5 h-5 text-pink-600 rounded border-gray-300 focus:ring-pink-500 mr-4 cursor-pointer">
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-lg">${ex.name}</h4>
+                                    <p class="text-sm text-slate-500 font-medium">${ex.sets} sets x ${ex.reps}</p>
+                                    ${ex.note ? `<p class="text-xs text-pink-600 italic mt-1">${ex.note}</p>` : ''}
+                                </div>
+                            </div>
+                            <a href="${videoUrl}" target="_blank" class="inline-flex items-center justify-center px-3 py-1.5 bg-white border border-stone-300 rounded text-xs font-semibold text-slate-600 hover:bg-stone-50 hover:text-red-600 hover:border-red-200 transition">
+                                <span class="mr-1">📺</span> Watch Demo
+                            </a>
+                        </div>
+                    `;
+                });
+            } else {
+                listContainer.innerHTML = `<div class="p-4 bg-stone-50 rounded-lg">
+                    <h3 class="font-bold text-slate-700 mb-3">Suggested Activities:</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        ${data.options.map(opt => `<li>${opt}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+        }
+
+        function toggleWarmup() {
+            const content = document.getElementById('warmup-content');
+            const arrow = document.getElementById('warmup-arrow');
+            content.classList.toggle('hidden');
+            if (content.classList.contains('hidden')) {
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function calculateProtein() {
+            const weight = document.getElementById('weight-input').value;
+            if (weight && weight > 0) {
+                const minProt = (weight * 0.8).toFixed(0);
+                const maxProt = (weight * 1.0).toFixed(0);
+                document.getElementById('protein-val').innerText = minProt;
+                document.getElementById('protein-val-max').innerText = maxProt;
+                document.getElementById('protein-result').classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('load', () => {
+            renderDayTabs();
+            // Initial Chart
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Lower Body Focus', 'Cardio/Circuit', 'Upper Body/Core', 'Rest'],
+                    datasets: [{
+                        data: [3, 2, 1, 1],
+                        backgroundColor: [
+                            '#ec4899', // pink-500 (Lower Body)
+                            '#f97316', // orange-500 (Cardio)
+                            '#3b82f6', // blue-500 (Upper)
+                            '#f5f5f4'  // stone-100 (Rest)
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronFlow: Home Tone & Weight Loss</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals, Slate Blue & Energetic Coral for Weight Loss Focus -->
+    <!-- Application Structure Plan: 
+         1. Hero/Dashboard: Updated for Weight Loss goal. Chart shows split between Lower Body, Full Body/Upper, and Cardio.
+         2. Training Hub: Specific "Work From Home" exercises. Added "Watch Demo" buttons for video visualization.
+         3. Progress & Nutrition: Retained protein calc, added Calorie Deficit note.
+         4. Navigation: Same robust tab system.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; 
+            height: 300px;    
+            max-height: 350px;
+            margin: 0 auto;
+        }
+
+        /* Hide scrollbar for clean UI in lists */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .active-tab {
+            border-bottom: 2px solid #ec4899; /* Pink-500 for energy */
+            color: #be185d; /* Pink-700 */
+            font-weight: 600;
+        }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-slate-700 tracking-tight">IronFlow <span class="text-pink-500 text-sm font-normal">Home & Tone</span></span>
+                </div>
+                <div class="flex space-x-8 items-center hidden md:flex">
+                    <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn active-tab px-3 py-2 text-sm transition-colors">Overview</button>
+                    <button onclick="switchView('training')" id="nav-training" class="nav-btn px-3 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">Daily Training</button>
+                    <button onclick="switchView('lifestyle')" id="nav-lifestyle" class="nav-btn px-3 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">Diet & Tips</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-slate-500 focus:outline-none">
+                        Menu ☰
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-stone-200 px-4 py-2">
+            <button onclick="switchView('dashboard')" class="block w-full text-left py-2 text-slate-700">Overview</button>
+            <button onclick="switchView('training')" class="block w-full text-left py-2 text-slate-700">Daily Training</button>
+            <button onclick="switchView('lifestyle')" class="block w-full text-left py-2 text-slate-700">Diet & Tips</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- VIEW 1: DASHBOARD -->
+        <section id="view-dashboard" class="fade-in">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-bold text-slate-800 mb-2">Weight Loss & Lower Body Focus</h1>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    A high-energy, work-from-home routine designed to burn calories and tone legs & glutes.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                
+                <!-- Weekly Schedule Grid -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="mr-2">📅</span> The Schedule
+                    </h2>
+                    <p class="text-sm text-slate-500 mb-6">
+                        3 focused Lower Body days, 1 Upper Body tone, and Cardio to maximize fat burn.
+                    </p>
+                    <div class="space-y-3">
+                        <button onclick="selectDay('monday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-pink-50 hover:bg-pink-100 transition border-l-4 border-pink-500">
+                            <span class="font-semibold text-pink-900">Monday</span>
+                            <span class="text-sm text-pink-700">Lower Body: Strength (Squats)</span>
+                        </button>
+                        <button onclick="selectDay('tuesday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition border-l-4 border-blue-500">
+                            <span class="font-semibold text-blue-900">Tuesday</span>
+                            <span class="text-sm text-blue-700">Upper Body Tone & Core</span>
+                        </button>
+                        <button onclick="selectDay('wednesday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-orange-50 hover:bg-orange-100 transition border-l-4 border-orange-500">
+                            <span class="font-semibold text-orange-900">Wednesday</span>
+                            <span class="text-sm text-orange-700">HIIT Cardio / Fat Burn</span>
+                        </button>
+                        <button onclick="selectDay('thursday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-pink-50 hover:bg-pink-100 transition border-l-4 border-pink-500">
+                            <span class="font-semibold text-pink-900">Thursday</span>
+                            <span class="text-sm text-pink-700">Lower Body: Glutes & Hips</span>
+                        </button>
+                        <button onclick="selectDay('friday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition border-l-4 border-purple-500">
+                            <span class="font-semibold text-purple-900">Friday</span>
+                            <span class="text-sm text-purple-700">Full Body Circuit</span>
+                        </button>
+                        <button onclick="selectDay('saturday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 transition border-l-4 border-emerald-500">
+                            <span class="font-semibold text-emerald-900">Saturday</span>
+                            <span class="text-sm text-emerald-700">Active: Walking/Hiking</span>
+                        </button>
+                        <button onclick="selectDay('sunday')" class="w-full flex items-center justify-between p-3 rounded-lg bg-stone-100 hover:bg-stone-200 transition border-l-4 border-stone-400">
+                            <span class="font-semibold text-stone-700">Sunday</span>
+                            <span class="text-sm text-stone-600">Rest & Recovery</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Visual Breakdown -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col items-center justify-center">
+                    <h2 class="text-xl font-bold mb-2">Focus Distribution</h2>
+                    <p class="text-sm text-slate-500 mb-4 text-center">
+                        Heavy emphasis on Lower Body and Calorie Burning (HIIT/Circuit).
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+                    <div class="mt-6 grid grid-cols-3 gap-4 text-center w-full">
+                        <div class="p-2 bg-pink-50 rounded">
+                            <div class="text-lg font-bold text-pink-600">3</div>
+                            <div class="text-xs text-slate-500 uppercase">Lower Body</div>
+                        </div>
+                        <div class="p-2 bg-orange-50 rounded">
+                            <div class="text-lg font-bold text-orange-600">3</div>
+                            <div class="text-xs text-slate-500 uppercase">Circuit/Cardio</div>
+                        </div>
+                        <div class="p-2 bg-stone-100 rounded">
+                            <div class="text-lg font-bold text-stone-600">1</div>
+                            <div class="text-xs text-slate-500 uppercase">Rest</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg w-full">
+                        <h3 class="text-sm font-bold text-yellow-800 mb-1">💡 Weight Loss Tip</h3>
+                        <p class="text-xs text-yellow-700">You cannot "spot reduce" fat, but you CAN build muscle in your legs while burning fat overall. This routine does exactly that.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- VIEW 2: TRAINING HUB -->
+        <section id="view-training" class="hidden fade-in">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-800">Home Workout Hub</h1>
+                <p class="text-slate-600">No gym required. Click "Watch Demo" to see how to do the move on YouTube.</p>
+            </div>
+
+            <!-- Warm Up Section -->
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-8">
+                <div class="flex items-center justify-between cursor-pointer" onclick="toggleWarmup()">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">🔥</span>
+                        <div>
+                            <h3 class="font-bold text-orange-900">Pre-Workout Warm Up</h3>
+                            <p class="text-sm text-orange-700">Essential for preventing injury. Click to expand.</p>
+                        </div>
+                    </div>
+                    <span id="warmup-arrow" class="text-orange-900 text-xl transform transition-transform">▼</span>
+                </div>
+                <div id="warmup-content" class="hidden mt-4 border-t border-orange-200 pt-4">
+                    <ul class="list-disc pl-5 space-y-2 text-orange-800">
+                        <li><strong>1 Min:</strong> High Knees or Jog in Place (Get heart rate up).</li>
+                        <li><strong>1 Min:</strong> Bodyweight Squats (Slow, focus on depth).</li>
+                        <li><strong>1 Min:</strong> Arm Circles & Torso Twists.</li>
+                        <li><strong>1 Min:</strong> Glute Bridges (Wake up the hips).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Day Selector Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6" id="day-tabs">
+                <!-- Buttons injected by JS -->
+            </div>
+
+            <!-- Workout Content Card -->
+            <div id="workout-card" class="bg-white rounded-xl shadow-lg border border-stone-200 overflow-hidden">
+                <!-- Header -->
+                <div class="bg-slate-800 text-white p-6">
+                    <h2 id="workout-title" class="text-2xl font-bold">Select a Day</h2>
+                    <p id="workout-focus" class="text-slate-300 italic">Select a day above to see the routine.</p>
+                </div>
+                
+                <!-- Content -->
+                <div class="p-6">
+                    <!-- Exercise List -->
+                    <div id="exercise-list" class="space-y-4">
+                        <p class="text-center text-slate-400 py-10">Select a workout day to begin.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- VIEW 3: LIFESTYLE (Nutrition & Progress) -->
+        <section id="view-lifestyle" class="hidden fade-in">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-800">Diet & Progress</h1>
+                <p class="text-slate-600">Exercise is for fitness. Diet is for weight loss.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Protein Calculator -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h2 class="text-xl font-bold mb-4 text-emerald-700 flex items-center">
+                        <span class="mr-2">🥗</span> Protein Calculator
+                    </h2>
+                    <p class="text-sm text-slate-600 mb-4">
+                        High protein helps you stay full and build muscle while losing fat.
+                    </p>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Your Weight (lbs)</label>
+                        <div class="flex">
+                            <input type="number" id="weight-input" placeholder="e.g. 175" class="flex-1 p-3 border border-stone-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <button onclick="calculateProtein()" class="bg-emerald-600 text-white px-6 font-bold rounded-r-lg hover:bg-emerald-700">Calc</button>
+                        </div>
+                    </div>
+
+                    <div id="protein-result" class="hidden bg-emerald-50 p-4 rounded-lg text-center border border-emerald-100">
+                        <p class="text-sm text-emerald-800">Daily Target:</p>
+                        <p class="text-3xl font-bold text-emerald-600"><span id="protein-val">0</span>g - <span id="protein-val-max">0</span>g</p>
+                    </div>
+                </div>
+
+                <!-- Weight Loss Keys -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h2 class="text-xl font-bold mb-4 text-pink-700 flex items-center">
+                        <span class="mr-2">⚖️</span> Keys to Weight Loss
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+                            <h3 class="font-bold text-slate-800">1. Calorie Deficit</h3>
+                            <p class="text-sm text-slate-600 mt-1">You must eat fewer calories than you burn. This routine burns calories, but portion control is key.</p>
+                        </div>
+                        <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+                            <h3 class="font-bold text-slate-800">2. NEAT (Walking)</h3>
+                            <p class="text-sm text-slate-600 mt-1">Non-Exercise Activity Thermogenesis. Try to get 7k-10k steps a day *outside* of these workouts.</p>
+                        </div>
+                        <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+                            <h3 class="font-bold text-slate-800">3. Consistency</h3>
+                            <p class="text-sm text-slate-600 mt-1">Don't be perfect, be consistent. If you miss a day, just get back on track the next.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 py-6 mt-8">
+        <div class="max-w-5xl mx-auto px-4 text-center text-slate-400 text-sm">
+            <p>© IronFlow Tracker. Consult a physician before beginning any exercise program.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORE (UPDATED FOR WEIGHT LOSS & LOWER BODY) ---
+        const scheduleData = {
+            monday: {
+                title: "Day 1: Lower Body Strength",
+                focus: "Target: Quads, Glutes & Hamstrings. Heavy focus.",
+                type: "strength",
+                exercises: [
+                    { name: "Goblet Squats", sets: 3, reps: "12 reps", note: "Use a dumbbell or heavy water bottle", query: "how to do goblet squats home workout" },
+                    { name: "Reverse Lunges", sets: 3, reps: "10 per leg", note: "Keep chest up, knee almost touching floor", query: "how to do reverse lunges" },
+                    { name: "Glute Bridges", sets: 3, reps: "15-20 reps", note: "Squeeze hard at the top", query: "how to do glute bridges" },
+                    { name: "Calf Raises", sets: 3, reps: "20 reps", note: "Use a step or stairs if available", query: "how to do calf raises at home" },
+                    { name: "Wall Sit", sets: 3, reps: "45 seconds", note: "Burnout finisher!", query: "how to do wall sit" }
+                ]
+            },
+            tuesday: {
+                title: "Day 2: Upper Body Tone & Core",
+                focus: "Target: Posture and Core strength. Keep intensity high.",
+                type: "strength",
+                exercises: [
+                    { name: "Push-Ups (Knees or Toes)", sets: 3, reps: "8-12 reps", note: "Keep body in a straight line", query: "how to do push ups for beginners" },
+                    { name: "Doorframe Rows / Towel Rows", sets: 3, reps: "12-15 reps", note: "Works the back posture", query: "how to do doorframe rows" },
+                    { name: "Shoulder Taps (Plank position)", sets: 3, reps: "20 taps total", note: "Anti-rotation core work", query: "how to do shoulder taps" },
+                    { name: "Tricep Dips", sets: 3, reps: "10-12 reps", note: "Use a sturdy chair or couch", query: "how to do tricep dips on chair" },
+                    { name: "Plank", sets: 3, reps: "30-60 sec", note: "Hold steady!", query: "how to do a perfect plank" }
+                ]
+            },
+            wednesday: {
+                title: "Day 3: HIIT / Cardio Fat Burn",
+                focus: "Target: High heart rate to burn calories.",
+                type: "cardio",
+                exercises: [
+                    { name: "Jumping Jacks", sets: 4, reps: "45 seconds", note: "15 sec rest between sets", query: "how to do jumping jacks" },
+                    { name: "Mountain Climbers", sets: 4, reps: "30 seconds", note: "Fast pace!", query: "how to do mountain climbers" },
+                    { name: "Bodyweight Squat Jumps", sets: 4, reps: "15 reps", note: "Explosive movement", query: "how to do squat jumps" },
+                    { name: "High Knees", sets: 4, reps: "30 seconds", note: "Get knees to waist height", query: "how to do high knees" },
+                    { name: "Burpees (No pushup)", sets: 3, reps: "10 reps", note: "The ultimate calorie burner", query: "how to do burpees for beginners" }
+                ]
+            },
+            thursday: {
+                title: "Day 4: Glutes & Hips (Lower Focus)",
+                focus: "Target: Shaping the glutes and improving hip stability.",
+                type: "strength",
+                exercises: [
+                    { name: "Donkey Kicks", sets: 3, reps: "15 per leg", note: "Squeeze glute at top", query: "how to do donkey kicks" },
+                    { name: "Fire Hydrants", sets: 3, reps: "15 per leg", note: "Side glute work", query: "how to do fire hydrants exercise" },
+                    { name: "Single Leg Deadlift", sets: 3, reps: "10 per leg", note: "Use wall for balance if needed", query: "how to do single leg deadlift bodyweight" },
+                    { name: "Side Lunges", sets: 3, reps: "10 per leg", note: "Deep stretch and push back", query: "how to do side lunges" },
+                    { name: "Sumo Squat Pulses", sets: 3, reps: "20 pulses", note: "Wide stance, small movements at bottom", query: "how to do sumo squat pulses" }
+                ]
+            },
+            friday: {
+                title: "Day 5: Full Body Circuit",
+                focus: "Target: Endurance and calorie burn. Minimal rest.",
+                type: "strength",
+                exercises: [
+                    { name: "Squat to Overhead Press", sets: 3, reps: "15 reps", note: "Use water bottles or light weights", query: "how to do squat to overhead press" },
+                    { name: "Step-Ups", sets: 3, reps: "12 per leg", note: "Use a sturdy chair or stairs", query: "how to do step ups on chair" },
+                    { name: "Bicycle Crunches", sets: 3, reps: "20 reps", note: "Slow and controlled", query: "how to do bicycle crunches" },
+                    { name: "Inchworms", sets: 3, reps: "10 reps", note: "Hamstring stretch + shoulder work", query: "how to do inchworms exercise" },
+                    { name: "Russian Twists", sets: 3, reps: "20 reps", note: "Feet up or down", query: "how to do russian twists" }
+                ]
+            },
+            saturday: {
+                title: "Day 6: Active Recovery / LISS",
+                focus: "Low Intensity Steady State cardio. Great for fat burning without stress.",
+                type: "cardio_light",
+                options: [
+                    "45 Minute Brisk Walk (Outdoors)",
+                    "Hiking in nature",
+                    "Light Bike Ride",
+                    "Deep Stretching / Yoga Session"
+                ]
+            },
+            sunday: {
+                title: "Day 7: Full Rest",
+                focus: "Recover. Meal prep for the week to stay on diet.",
+                type: "rest",
+                options: ["Sleep", "Hydrate", "Meal Prep Healthy Lunches"]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        let currentView = 'dashboard';
+
+        // --- DOM MANIPULATION ---
+
+        function switchView(viewName) {
+            currentView = viewName;
+            ['dashboard', 'training', 'lifestyle'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${v}`);
+                if(btn) {
+                    btn.classList.remove('active-tab', 'text-pink-700');
+                    btn.classList.add('text-slate-500');
+                }
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-slate-500');
+            }
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function selectDay(dayKey) {
+            switchView('training');
+            renderWorkout(dayKey);
+        }
+
+        function renderDayTabs() {
+            const container = document.getElementById('day-tabs');
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            container.innerHTML = days.map(day => {
+                const label = day.charAt(0).toUpperCase() + day.slice(1, 3);
+                return `<button onclick="renderWorkout('${day}')" class="px-4 py-2 rounded-full text-sm font-semibold border border-stone-200 bg-white hover:bg-slate-50 focus:ring-2 focus:ring-pink-400 transition" id="tab-${day}">${label}</button>`;
+            }).join('');
+        }
+
+        function renderWorkout(dayKey) {
+            const data = scheduleData[dayKey];
+            
+            document.querySelectorAll('#day-tabs button').forEach(b => {
+                b.classList.remove('bg-slate-800', 'text-white');
+                b.classList.add('bg-white', 'text-slate-700');
+            });
+            document.getElementById(`tab-${dayKey}`).classList.remove('bg-white', 'text-slate-700');
+            document.getElementById(`tab-${dayKey}`).classList.add('bg-slate-800', 'text-white');
+
+            document.getElementById('workout-title').innerText = data.title;
+            document.getElementById('workout-focus').innerText = data.focus;
+
+            const listContainer = document.getElementById('exercise-list');
+            listContainer.innerHTML = '';
+
+            if (data.type === 'strength' || data.type === 'cardio') {
+                data.exercises.forEach((ex, index) => {
+                    // Create search URL for video demo
+                    const videoUrl = `https://www.youtube.com/results?search_query=${ex.query.replace(/ /g, '+')}`;
+                    
+                    listContainer.innerHTML += `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-stone-50 rounded-lg transition border-b border-stone-100 last:border-0 gap-3">
+                            <div class="flex items-start">
+                                <input type="checkbox" id="check-${index}" class="mt-1 w-5 h-5 text-pink-600 rounded border-gray-300 focus:ring-pink-500 mr-4 cursor-pointer">
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-lg">${ex.name}</h4>
+                                    <p class="text-sm text-slate-500 font-medium">${ex.sets} sets x ${ex.reps}</p>
+                                    ${ex.note ? `<p class="text-xs text-pink-600 italic mt-1">${ex.note}</p>` : ''}
+                                </div>
+                            </div>
+                            <a href="${videoUrl}" target="_blank" class="inline-flex items-center justify-center px-3 py-1.5 bg-white border border-stone-300 rounded text-xs font-semibold text-slate-600 hover:bg-stone-50 hover:text-red-600 hover:border-red-200 transition">
+                                <span class="mr-1">📺</span> Watch Demo
+                            </a>
+                        </div>
+                    `;
+                });
+            } else {
+                listContainer.innerHTML = `<div class="p-4 bg-stone-50 rounded-lg">
+                    <h3 class="font-bold text-slate-700 mb-3">Suggested Activities:</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        ${data.options.map(opt => `<li>${opt}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+        }
+
+        function toggleWarmup() {
+            const content = document.getElementById('warmup-content');
+            const arrow = document.getElementById('warmup-arrow');
+            content.classList.toggle('hidden');
+            if (content.classList.contains('hidden')) {
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function calculateProtein() {
+            const weight = document.getElementById('weight-input').value;
+            if (weight && weight > 0) {
+                const minProt = (weight * 0.8).toFixed(0);
+                const maxProt = (weight * 1.0).toFixed(0);
+                document.getElementById('protein-val').innerText = minProt;
+                document.getElementById('protein-val-max').innerText = maxProt;
+                document.getElementById('protein-result').classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('load', () => {
+            renderDayTabs();
+            // Initial Chart
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Lower Body Focus', 'Cardio/Circuit', 'Upper Body/Core', 'Rest'],
+                    datasets: [{
+                        data: [3, 2, 1, 1],
+                        backgroundColor: [
+                            '#ec4899', // pink-500 (Lower Body)
+                            '#f97316', // orange-500 (Cardio)
+                            '#3b82f6', // blue-500 (Upper)
+                            '#f5f5f4'  // stone-100 (Rest)
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
